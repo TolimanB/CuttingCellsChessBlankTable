@@ -99,6 +99,9 @@ def calc(real_width, real_height, width, height):
 
     return p2h
 
+
+
+
 path_f = []
 names_f = []
 for d, dirs, files in os.walk(folder_in):
