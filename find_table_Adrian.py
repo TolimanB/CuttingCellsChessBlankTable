@@ -5,6 +5,9 @@ import numpy as np
 import imutils
 import cv2
 import os
+from pytesseract import Output
+import pytesseract
+
 
 #def find_puzzle(image, debug=False):
 debug=False
@@ -92,5 +95,18 @@ for f in path_f:
     fsss = fss[-1].split('.')
     # out_fname = f[0] + '_out.' + f[1]
     out_fname = folder_out + '\\' + fsss[0]+'_G.'+fsss[1]
-    cv2.imwrite(out_fname, puzzle)
+
+    # предпоследший шаг - проверим, надо ли изображение вращать - через направление текста - также код Адриана
+    rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Users\79086\AppData\Local\Programs\Tesseract-OCR\tesseract.exe' #todo - почему-то надо явно указать путь до tesseract, в path не читает, надо разобраться
+    results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
+    # display the orientation information
+    print("[INFO] detected orientation: {}".format(
+        results["orientation"]))
+    print("[INFO] rotate by {} degrees to correct".format(
+        results["rotate"]))
+    print("[INFO] detected script: {}".format(results["script"]))
+    rotated = imutils.rotate_bound(puzzle, angle=results["rotate"])
+
+    cv2.imwrite(out_fname, rotated)
     i=i+1
