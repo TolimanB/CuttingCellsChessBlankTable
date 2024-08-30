@@ -10,7 +10,7 @@ import pytesseract
 
 
 #def find_puzzle(image, debug=False):
-debug=False
+debug=True
 folder_in = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\In'
 folder_out = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\Out'
 
