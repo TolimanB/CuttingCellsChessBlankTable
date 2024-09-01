@@ -13,6 +13,8 @@ import pytesseract
 debug=True
 folder_in = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\In'
 folder_out = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\Out'
+kx=0.25
+ky=0.25
 
 path_f = []
 names_f = []
@@ -37,7 +39,7 @@ for f in path_f:
     # check to see if we are visualizing each step of the image
     # processing pipeline (in this case, thresholding)
     if debug:
-    	cv2.imshow("Puzzle Thresh", thresh)
+    	cv2.imshow("Puzzle Thresh", cv2.resize(thresh,None,fx=kx, fy=ky))
     	cv2.waitKey(0)
 
     # find contours in the thresholded image and sort them by size in
@@ -75,7 +77,7 @@ for f in path_f:
     	# it to our screen for visualization/debugging purposes
     	output = image.copy()
     	cv2.drawContours(output, [puzzleCnt], -1, (0, 255, 0), 2)
-    	cv2.imshow("Puzzle Outline", output)
+    	cv2.imshow("Puzzle Outline", cv2.resize(output,None,fx=kx, fy=ky))
     	cv2.waitKey(0)
 
     # apply a four point perspective transform to both the original
@@ -87,7 +89,7 @@ for f in path_f:
     # check to see if we are visualizing the perspective transform
     if debug:
     	# show the output warped image (again, for debugging purposes)
-    	cv2.imshow("Puzzle Transform", puzzle)
+    	cv2.imshow("Puzzle Transform", cv2.resize(puzzle,None,fx=kx, fy=ky))
     	cv2.waitKey(0)
         # return a 2-tuple of puzzle in both RGB and grayscale
         #return (puzzle, warped)
