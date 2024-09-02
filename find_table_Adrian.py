@@ -48,21 +48,24 @@ for f in path_f:
     	cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
-
+    #print(cnts)
     # initialize a contour that corresponds to the puzzle outline
     puzzleCnt = None
 
     # loop over the contours
     for c in cnts:
-    	# approximate the contour
-    	peri = cv2.arcLength(c, True)
-    	approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-
-    	# if our approximated contour has four points, then we can
-    	# assume we have found the outline of the puzzle
-    	if len(approx) == 4:
-    		puzzleCnt = approx
-    		break
+        # approximate the contour
+        peri = cv2.arcLength(c, True)
+        approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+        #tmpcnt = image.copy()
+        #cv2.drawContours(tmpcnt, [approx], -1, (0, 255, 0), 2)
+        #cv2.imshow("Puzzle Intermediate Contours", cv2.resize(tmpcnt, None, fx=kx, fy=ky))
+        #cv2.waitKey(0)
+        # if our approximated contour has four points, then we can
+        # assume we have found the outline of the puzzle
+        if len(approx) == 4:
+        	puzzleCnt = approx
+        	break
 
     # if the puzzle contour is empty then our script could not find
     # the outline of the sudoku puzzle so raise an error
