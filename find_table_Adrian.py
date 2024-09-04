@@ -112,6 +112,7 @@ for f in path_f:
         results["rotate"]))
     print("[INFO] detected script: {}".format(results["script"]))
     rotated = imutils.rotate_bound(puzzle, angle=results["rotate"])
-
+    print ("[INFO] size of rotated image:{}".format (rotated.size))
+    print ("[INFO] size of original image:{}".format(image.size))
     cv2.imwrite(out_fname, rotated)
     i=i+1
