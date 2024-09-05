@@ -13,6 +13,8 @@ import pytesseract
 debug=False
 folder_in = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\In'
 folder_out = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\Out'
+#в названии католога неприемлемы пути на букву \U -папку надо назвать Unrectangled
+#todo - разобраться
 folder_unrect = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\RecognizedNot'
 kx=0.25
 ky=0.25
