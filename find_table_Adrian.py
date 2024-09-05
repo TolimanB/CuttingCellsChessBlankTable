@@ -10,11 +10,13 @@ import pytesseract
 
 
 #def find_puzzle(image, debug=False):
-debug=True
+debug=False
 folder_in = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\In'
 folder_out = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\Out'
+folder_unrect = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\RecognizedNot'
 kx=0.25
 ky=0.25
+kTabToBlank=0.4
 
 path_f = []
 names_f = []
@@ -100,6 +102,7 @@ for f in path_f:
     fsss = fss[-1].split('.')
     # out_fname = f[0] + '_out.' + f[1]
     out_fname = folder_out + '\\' + fsss[0]+'_G.'+fsss[1]
+    unrect_fname = folder_unrect + '\\' + fsss[0]+'_G.'+fsss[1]
 
     # предпоследший шаг - проверим, надо ли изображение вращать - через направление текста - также код Адриана
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -114,5 +117,9 @@ for f in path_f:
     rotated = imutils.rotate_bound(puzzle, angle=results["rotate"])
     print ("[INFO] size of rotated image:{}".format (rotated.size))
     print ("[INFO] size of original image:{}".format(image.size))
-    cv2.imwrite(out_fname, rotated)
+    print ("[INFO] relation of sizes:{}".format(round(rotated.size/image.size,1)))
+    if (round (rotated.size/image.size,2) > kTabToBlank ):
+        cv2.imwrite(out_fname, rotated)
+    else:
+        cv2.imwrite(unrect_fname, rotated)
     i=i+1
