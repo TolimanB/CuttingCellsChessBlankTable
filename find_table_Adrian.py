@@ -7,9 +7,10 @@ import cv2
 import os
 from pytesseract import Output
 import pytesseract
+from Useful_funcs import extract_digit
 
 
-#def find_puzzle(image, debug=False):
+#def find_table(image, debug=False):
 debug=False
 folder_in = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\In'
 folder_out = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\Out'

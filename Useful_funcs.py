@@ -2,6 +2,10 @@ from skimage.segmentation import clear_border
 import numpy as np
 import imutils
 import cv2
+
+def find_edge_digits (attempt_cell,debug=False):
+	stepX = warped.shape[1] // 9
+	stepY = warped.shape[0] // 9
 def extract_digit(cell, debug=False):
 	# apply automatic thresholding to the cell and then clear any
 	# connected borders that touch the border of the cell
