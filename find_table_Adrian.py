@@ -118,11 +118,12 @@ for f in path_f:
         results["rotate"]))
     print("[INFO] detected script: {}".format(results["script"]))
     rotated = imutils.rotate_bound(puzzle, angle=results["rotate"])
+    rotated_gray = imutils.rotate_bound(warped, angle=results["rotate"])
     print ("[INFO] size of rotated image:{}".format (rotated.size))
     print ("[INFO] size of original image:{}".format(image.size))
     print ("[INFO] relation of sizes:{}".format(round(rotated.size/image.size,1)))
     if (round (rotated.size/image.size,2) > kTabToBlank ):
-        cv2.imwrite(out_fname, rotated)
+        cv2.imwrite(out_fname,rotated_gray) #rotated)
     else:
-        cv2.imwrite(unrect_fname, rotated)
+        cv2.imwrite(unrect_fname,rotated_gray) #rotated)
     i=i+1

@@ -10,8 +10,9 @@ import cv2
 import imutils
 import cv2
 import os
+from Useful_funcs import *
 
-k_try1 = 20
+k_try1 = 21
 k_try2 = 25
 k_try3 = 30
 k_try4 = 40
@@ -35,7 +36,14 @@ for f in path_f:
 	image = cv2.imread(f)
 
 	stepY = image.shape[0]//k_try1
-	stepX = stepY
+	stepX = stepY+stepY//2
+
+    #первая ячейка, проверяем, что там
+	startX_upper = 5
+	startY_upper = 5
+	endX_upper = stepX
+	endY_upper = stepY
+	cell_upper = image[startX_upper:endY_upper,startY_upper:endY_upper]
 
 	startX = 5
 	startY = (k_try1-1) * stepY
@@ -43,30 +51,36 @@ for f in path_f:
 	endY = k_try1*stepY
 
 	cell = image[startY:endY, startX:endX]
+	gray_cell = cv2.cvtColor(cell, cv2.COLOR_BGR2GRAY)
 	if debug:
+		cv2.imshow("Cell_upper", cv2.resize(cell_upper, None, fx=1, fy=1))
+		cv2.waitKey(0)
 		cv2.imshow("Cell_20", cv2.resize(cell, None, fx=1, fy=1))
 		cv2.waitKey(0)
 
 	startX_first_digit = 0
 	startY_first_digit = 0
-	endX_first_digit = stepY//2
+	endX_first_digit = (stepX//2)
 	endY_first_digit = stepY
 
-	startX_second_digit = stepY//2
+	startX_second_digit = (stepX-20)//2
 	startY_second_digit = 0
-	endX_second_digit = stepY
+	endX_second_digit = stepX
 	endY_second_digit = stepY
 
 	cell_first_one = cell[startY_first_digit:endY_first_digit, startX_first_digit:endX_first_digit]
 	cell_second_one = cell[startY_second_digit:endY_second_digit, startX_second_digit:endX_second_digit]
+	gray_cell_first_one = cv2.cvtColor(cell_first_one, cv2.COLOR_BGR2GRAY)
+	gray_cell_second_one = cv2.cvtColor(cell_second_one, cv2.COLOR_BGR2GRAY)
 	if debug:
 		cv2.imshow("Cell_20_1", cv2.resize(cell_first_one, None, fx=1, fy=1))
 		cv2.waitKey(0)
 		cv2.imshow("Cell_20_2", cv2.resize(cell_second_one, None, fx=1, fy=1))
 		cv2.waitKey(0)
 
-
-	# digit = extract_digit(cell_first_one, debug=True)
+	#digit = extract_digit(gray_cell, debug=True)
+	digit1 = extract_digit(gray_cell_first_one, debug=True)
+	digit2 = extract_digit(gray_cell_second_one, debug=True)
 	# # verify that the digit is not empty
 	# if digit is not None:
 	# 	# resize the cell to 28x28 pixels and then prepare the
