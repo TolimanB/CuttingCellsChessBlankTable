@@ -1,8 +1,9 @@
 # import the necessary packages
 # from pyimagesearch.sudoku import extract_digit
 # from pyimagesearch.sudoku import find_puzzle
-# from tensorflow.keras.preprocessing.image import img_to_array
-# from tensorflow.keras.models import load_model
+#from keras.src.models import model
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.models import load_model
 import numpy as np
 import argparse
 import imutils
@@ -24,7 +25,7 @@ folder_out = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\Out'
 debug = True
 # load the digit classifier from disk
 print("[INFO] loading digit classifier...")
-#model = load_model(path_to_model)
+model = load_model(path_to_model)
 
 for d, dirs, files in os.walk(folder_out):
 	for f in files:
@@ -81,15 +82,22 @@ for f in path_f:
 	#digit = extract_digit(gray_cell, debug=True)
 	digit1 = extract_digit(gray_cell_first_one, debug=True)
 	digit2 = extract_digit(gray_cell_second_one, debug=True)
-	# # verify that the digit is not empty
-	# if digit is not None:
-	# 	# resize the cell to 28x28 pixels and then prepare the
-	# 	# cell for classification
-	# 	roi = cv2.resize(digit, (28, 28))
-	# 	roi = roi.astype("float") / 255.0
-	# 	roi = img_to_array(roi)
-	# 	roi = np.expand_dims(roi, axis=0)
-	#
-	# 	# classify the digit and update the sudoku board with the
-	# 	# prediction
-	# 	pred = model.predict(roi).argmax(axis=1)[0]
+	# verify that the digit is not empty
+	if digit1 is not None:
+	 	# resize the cell to 28x28 pixels and then prepare the
+	 	# cell for classification
+		roi1 = cv2.resize(digit1, (28, 28))
+		roi1 = roi1.astype("float") / 255.0
+		roi1 = img_to_array(roi1)
+		roi1 = np.expand_dims(roi1, axis=0)
+	 	# classify the digit and update the sudoku board with the
+	 	# prediction
+		pred1 = model.predict(roi1).argmax(axis=1)[0]
+		print("[INFO] classified digit1: "+ str(pred1))
+	if digit2 is not None:
+		roi2 = cv2.resize(digit2, (28, 28))
+		roi2 = roi2.astype("float") / 255.0
+		roi2 = img_to_array(roi2)
+		roi2 = np.expand_dims(roi2, axis=0)
+		pred2 = model.predict(roi2).argmax(axis=1)[0]
+		print("[INFO] classified digit2: "+ str (pred2))
