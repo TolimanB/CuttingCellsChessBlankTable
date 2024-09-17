@@ -20,7 +20,8 @@ k_try4 = 40
 
 path_f = []
 names_f = []
-path_to_model = 'C:\Projects\OCR\OCRPractitionerBundle_Code\OCRPractitionerBundle_Code\chapter08-sudoku_solver\output\digit_classifier.h5'
+#path_to_model = 'C:\Projects\OCR\OCRPractitionerBundle_Code\OCRPractitionerBundle_Code\chapter08-sudoku_solver\output\digit_classifier.h5'
+path_to_model = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\H5Output\digits_classifier.keras'
 folder_out = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\Out'
 debug = True
 # load the digit classifier from disk
@@ -45,6 +46,7 @@ for f in path_f:
 	endX_upper = stepX
 	endY_upper = stepY
 	cell_upper = image[startX_upper:endY_upper,startY_upper:endY_upper]
+	gray_cell_upper = cv2.cvtColor(cell_upper, cv2.COLOR_BGR2GRAY)
 
 	startX = 5
 	startY = (k_try1-1) * stepY
@@ -79,7 +81,7 @@ for f in path_f:
 		cv2.imshow("Cell_20_2", cv2.resize(cell_second_one, None, fx=1, fy=1))
 		cv2.waitKey(0)
 
-	#digit = extract_digit(gray_cell, debug=True)
+	digit_upp = extract_digit(gray_cell_upper, debug=True)
 	digit1 = extract_digit(gray_cell_first_one, debug=True)
 	digit2 = extract_digit(gray_cell_second_one, debug=True)
 	# verify that the digit is not empty
@@ -101,3 +103,17 @@ for f in path_f:
 		roi2 = np.expand_dims(roi2, axis=0)
 		pred2 = model.predict(roi2).argmax(axis=1)[0]
 		print("[INFO] classified digit2: "+ str (pred2))
+	if digit1 is not None and digit2 is not None:
+		numb= int(str(pred1)+str(pred2))
+		print("[INFO] classified lower numb: " + str(numb))
+	if digit_upp is not None:
+	 	# resize the cell to 28x28 pixels and then prepare the
+	 	# cell for classification
+		roi_upp = cv2.resize(digit_upp, (28, 28))
+		roi_upp = roi_upp.astype("float") / 255.0
+		roi_upp = img_to_array(roi_upp)
+		roi_upp = np.expand_dims(roi_upp, axis=0)
+	 	# classify the digit and update the sudoku board with the
+	 	# prediction
+		pred_upp = model.predict(roi_upp).argmax(axis=1)[0]
+		print("[INFO] classified upper digit: "+ str(pred_upp))
