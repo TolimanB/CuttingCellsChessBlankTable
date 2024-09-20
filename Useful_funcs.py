@@ -53,3 +53,5 @@ def extract_digit(cell, debug=False):
 
 	# return the digit to the calling function
 	return digit
+
+#def look_for_digits (image,type_of_search,need_to_split, debug=True):

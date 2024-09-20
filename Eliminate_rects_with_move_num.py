@@ -15,6 +15,9 @@ folder_done = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\To_work_wit
 path_f = []
 area_sum = 0.0
 perimeter_sum = 0.0
+koeff_min = 368
+koeff_max = 372
+
 for d, dirs, files in os.walk(folder_in):
     for fs in files:
         path = os.path.join(d, fs)  # формирование адреса
@@ -31,18 +34,19 @@ for f in path_f:
     clone = im.copy()
     #image,
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
+    globalArea = cv2.contourArea (contours[0])
+    print("Main Area of image  " + " = " + str(globalArea) + '\n')
     #вычислим для начала площадь и периметр наших изображений
     for (i, cn) in enumerate(contours):
 
 
-        print(i,'\n')
-        print ([cn])
+        #print(i,'\n')
+        #print ([cn])
         area = cv2.contourArea(cn)
         perimeter = cv2.arcLength(cn, True)
         (x, y, w, h) = cv2.boundingRect(cn)
         print("Area of  " + str(i) + " = "+ str(area) + '\n')
-        print("Perimeter  " + str(i) + " = " + str(perimeter) + '\n')
+        #print("Perimeter  " + str(i) + " = " + str(perimeter) + '\n')
 
         #arr = np.array()
         #np.append (arr,[i,area,perimeter,x,y,w,h],axis=0)
@@ -50,7 +54,8 @@ for f in path_f:
 
     #среднего ограничения по площади вполне достаточно, средний периметр можно не смотреть, ибо у некоторых прямогольников он раза в 1.5 больше среднего
         #if (area > 1500 and perimeter >100) and (area<7000 and perimeter<500): #and (area > 3812.44*0.85 and area<3812.44*1.15) :#and (perimeter > 312.61*0.8 and perimeter<312.61*1.2) :
-        if (area > 30000 and perimeter >700) and (area<38000 and perimeter<800):
+        #if (area > 3000 and perimeter >70): #and (area<3800 and perimeter<80):
+        if (area > (globalArea//koeff_max) and area < (globalArea//koeff_min)  ):
             j+=1
             M = cv2.moments(cn)
             cX = int(M["m10"] / M["m00"])
@@ -67,7 +72,7 @@ for f in path_f:
             cv2.imwrite(
                 folder_cells + '\\' + out_cell_name, little_cell)
 
-            cv2.putText(clone, "#{}".format(i), (cX - 20, cY), cv2.FONT_HERSHEY_SIMPLEX,
+            cv2.putText(clone, "#{}".format(area), (cX - 20, cY), cv2.FONT_HERSHEY_SIMPLEX,
                     0.5, (255, 255, 255), 1)
             area_sum += area
             #area_sigma = math.sqrt()

@@ -7,7 +7,6 @@ import cv2
 import os
 from pytesseract import Output
 import pytesseract
-from Useful_funcs import extract_digit
 
 
 #def find_table(image, debug=False):
@@ -69,8 +68,11 @@ for f in path_f:
         # if our approximated contour has four points, then we can
         # assume we have found the outline of the puzzle
         if len(approx) == 4:
-        	puzzleCnt = approx
-        	break
+            puzzleCnt = approx
+            globalArea = cv2.contourArea(c)
+            print("globalArea = " + str(globalArea))
+            print("peri = " + str(peri))  # соотношение периметров всей таблицы и 1 ячейки при условии 21 строчки и соотношения сторон 1.5 - это примерно 0.082
+            break
 
     # if the puzzle contour is empty then our script could not find
     # the outline of the sudoku puzzle so raise an error
