@@ -15,8 +15,29 @@ folder_done = 'C:\Projects\PyImageSearch\CuttingCellsChessBlankTable\To_work_wit
 path_f = []
 area_sum = 0.0
 perimeter_sum = 0.0
-koeff_min = 368
-koeff_max = 372
+#koeff_min = 368
+#koeff_max = 372
+k_try1 = 21
+kx=0.25
+ky=0.25
+def sort_contours(cnts, method="left-to-right"):
+	# initialize the reverse flag and sort index
+	reverse = False
+	i = 0
+	# handle if we need to sort in reverse
+	if method == "right-to-left" or method == "bottom-to-top":
+		reverse = True
+	# handle if we are sorting against the y-coordinate rather than
+	# the x-coordinate of the bounding box
+	if method == "top-to-bottom" or method == "bottom-to-top":
+		i = 1
+	# construct the list of bounding boxes and sort them from top to
+	# bottom
+	boundingBoxes = [cv2.boundingRect(c) for c in cnts]
+	(cnts, boundingBoxes) = zip(*sorted(zip(cnts, boundingBoxes),
+		key=lambda b:b[1][i], reverse=reverse))
+	# return the list of sorted contours and bounding boxes
+	return (cnts, boundingBoxes)
 
 for d, dirs, files in os.walk(folder_in):
     for fs in files:
@@ -36,6 +57,7 @@ for f in path_f:
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     globalArea = cv2.contourArea (contours[0])
     print("Main Area of image  " + " = " + str(globalArea) + '\n')
+    one_rectangle_side = imgray.shape[0] // k_try1
     #вычислим для начала площадь и периметр наших изображений
     for (i, cn) in enumerate(contours):
 
@@ -55,7 +77,7 @@ for f in path_f:
     #среднего ограничения по площади вполне достаточно, средний периметр можно не смотреть, ибо у некоторых прямогольников он раза в 1.5 больше среднего
         #if (area > 1500 and perimeter >100) and (area<7000 and perimeter<500): #and (area > 3812.44*0.85 and area<3812.44*1.15) :#and (perimeter > 312.61*0.8 and perimeter<312.61*1.2) :
         #if (area > 3000 and perimeter >70): #and (area<3800 and perimeter<80):
-        if (area > (globalArea//koeff_max) and area < (globalArea//koeff_min)  ):
+        if ((perimeter > 4*one_rectangle_side) and (perimeter < 5*one_rectangle_side)):
             j+=1
             M = cv2.moments(cn)
             cX = int(M["m10"] / M["m00"])
@@ -72,7 +94,7 @@ for f in path_f:
             cv2.imwrite(
                 folder_cells + '\\' + out_cell_name, little_cell)
 
-            cv2.putText(clone, "#{}".format(area), (cX - 20, cY), cv2.FONT_HERSHEY_SIMPLEX,
+            cv2.putText(clone, "#{}".format(i), (cX - 20, cY), cv2.FONT_HERSHEY_SIMPLEX,
                     0.5, (255, 255, 255), 1)
             area_sum += area
             #area_sigma = math.sqrt()
@@ -86,7 +108,7 @@ for f in path_f:
     #print ("avg_perimetr=",avg_perimetr)
 # show the output image
     out_file_name = fss[0] + '_' + 'marked'  + '.'+ fss[1]
-    cv2.imshow("Bounding Boxes "+fname[-1], clone)
+    cv2.imshow("Bounding Boxes "+fname[-1], cv2.resize(clone,None,fx=kx, fy=ky))
     cv2.waitKey(0)
     cv2.imwrite(folder_cells + '\\' + out_file_name, clone)
 
