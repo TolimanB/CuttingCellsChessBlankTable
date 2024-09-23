@@ -28,11 +28,20 @@ def filter_contours_by_peri_in_range (cnt_in):
     else:
         return False
 
-def filter_contours_by_farthest_x_board(cnt_in):
+def filter_contours_by_farthest_x_board1(cnt_in):
     (x, y, w, h) = cv2.boundingRect(cnt_in)
-    print ("x+w="+str((x+w)) + " "+ "h="+str(h),'\n')
-    print ("x+w="+str((x+w)) + " "+ "h="+str(7*h//5),'\n')
-    if (w > h and w < 7*h//5 and ((x<w//4) or (x>(x_rectangle_side-w//4) and x<(x_rectangle_side+w//4)))):
+    #print ("x+w="+str((x+w)) + " "+ "h="+str(h),'\n')
+    #print ("x+w="+str((x+w)) + " "+ "h="+str(7*h//5),'\n')
+    if (w > h and w < 7*h//5 and ((x<w//4))):    #при условии, что половина бланка, а не 1/3
+        return True
+    else:
+        return False
+#todo - рефакторить
+def filter_contours_by_farthest_x_board2(cnt_in):
+    (x, y, w, h) = cv2.boundingRect(cnt_in)
+    #print ("x+w="+str((x+w)) + " "+ "h="+str(h),'\n')
+    #print ("x+w="+str((x+w)) + " "+ "h="+str(7*h//5),'\n')
+    if (w > h and w < 7*h//5 and ((x>(x_rectangle_side-w//4) and x<(x_rectangle_side+w//4)))):    #при условии, что половина бланка, а не 1/3
         return True
     else:
         return False
@@ -51,13 +60,19 @@ def sort_contours(cnts, method="left-to-right"):
 	# construct the list of bounding boxes and sort them from top to
 	# bottom
     #(x, y, w, h) = cv2.boundingRect(cnts)
-    cnts = list(filter(filter_contours_by_farthest_x_board,cnts))
-    print ("cnts=",cnts)
-    boundingBoxes = [cv2.boundingRect(c) for c in cnts]
-    (cnts, boundingBoxes) = zip(*sorted(zip(cnts, boundingBoxes),
+    cnts_nearest = list(filter(filter_contours_by_farthest_x_board1,cnts))
+    #print ("cnts=",cnts)
+    boundingBoxes_nearest = [cv2.boundingRect(c) for c in cnts_nearest]
+    (cnts_nearest, boundingBoxes_nearest) = zip(*sorted(zip(cnts_nearest, boundingBoxes_nearest),
 		key=lambda b:b[1][i], reverse=reverse))
 	# return the list of sorted contours and bounding boxes
-    return (cnts, boundingBoxes)
+    #yield (cnts_nearest, boundingBoxes_nearest)
+    cnts_farthest = list(filter(filter_contours_by_farthest_x_board2, cnts))
+    # print ("cnts=",cnts)
+    boundingBoxes_farthest = [cv2.boundingRect(c) for c in cnts_farthest]
+    (cnts_farthest, boundingBoxes_farthest) = zip(*sorted(zip(cnts_farthest, boundingBoxes_farthest),
+                                                        key=lambda b: b[1][i], reverse=reverse))
+    return cnts_nearest+cnts_farthest
 
 for d, dirs, files in os.walk(folder_in):
     for fs in files:
@@ -81,7 +96,8 @@ for f in path_f:
     contours = list(filter(filter_contours_by_peri_in_range,contours))
     #print ("contours",contours)
     # sort the contours according to the provided method
-    (contours, boundingBoxes) = sort_contours(contours, method="top-to-bottom")
+    #(contours, boundingBoxes) = sort_contours(contours, method="top-to-bottom")
+    contours = sort_contours(contours, method="top-to-bottom")
     for (i, cn) in enumerate(contours):
 
 
