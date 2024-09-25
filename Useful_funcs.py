@@ -3,12 +3,12 @@ import numpy as np
 import imutils
 import cv2
 
-def extract_digit(cell, debug=False):
+def extract_digit(cell,name, debug=False): #todo - имя сделать необязательным и 3-м параметром
 	# apply automatic thresholding to the cell and then clear any
 	# connected borders that touch the border of the cell
 	thresh = cv2.threshold(cell, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
 	if debug:
-		cv2.imshow("Cell Thresh before borders", thresh)
+		cv2.imshow(name, thresh) #"Cell Thresh before borders"
 		cv2.waitKey(0)
 	thresh = clear_border(thresh)
 	#thresh = clear_border(cell)

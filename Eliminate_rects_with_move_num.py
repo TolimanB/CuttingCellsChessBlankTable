@@ -100,7 +100,6 @@ for f in path_f:
     contours = sort_contours(contours, method="top-to-bottom")
     for (i, cn) in enumerate(contours):
 
-
         #print(i,'\n')
         #print ([cn])
         #area = cv2.contourArea(cn)
@@ -126,12 +125,21 @@ for f in path_f:
         cv2.rectangle(clone, (x, y), (x + w, y + h), (0, 255, 0), 2)
         #cv2.drawContours(clone, [cn], -1, (0, 255, 0), 2)
         little_cell = im[y:y + h, x:x + w]
+        out_cell_name = fss[0] + '_' + str(i) + '.'+fss[1]
 
+        white_move = im [y:y+h, x+w:x+w+(x_rectangle_side-w)//2]
+        white_cell_name = fss[0] + '_' + 'white' + str(i) + '.'+fss[1]
 
-        out_cell_name = fss[0] + '_' + str(i)  + '.'+fss[1]
+        black_move = im[y:y + h, x + w + (x_rectangle_side - w) // 2 :x+x_rectangle_side-5]
+        black_cell_name = fss[0] + '_' + 'black' + str(i) + '.' + fss[1]
 
+        # номера ходов пока не сохраняем
+        #cv2.imwrite(
+        #    folder_cells + '\\' + out_cell_name, little_cell)
         cv2.imwrite(
-            folder_cells + '\\' + out_cell_name, little_cell)
+            folder_cells + '\\' + white_cell_name, white_move)
+        cv2.imwrite(
+            folder_cells + '\\' + black_cell_name, black_move)
 
         cv2.putText(clone, "#{}".format(i), (cX - 20, cY), cv2.FONT_HERSHEY_SIMPLEX,
                 1.5, (255, 255, 255), 3)
