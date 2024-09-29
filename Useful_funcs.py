@@ -3,6 +3,28 @@ import numpy as np
 import imutils
 import cv2
 
+def pyramid(image, scale=1.0, minSize=(30, 30)):
+	# yield the original image
+	yield image
+	# keep looping over the pyramid
+	while True:
+		# compute the new dimensions of the image and resize it
+		w = int(image.shape[1] / scale)
+		image = imutils.resize(image, width=w)
+		# if the resized image does not meet the supplied minimum
+		# size, then stop constructing the pyramid
+		if image.shape[0] < minSize[1] or image.shape[1] < minSize[0]:
+			break
+		# yield the next image in the pyramid
+		yield image
+def sliding_window_adaptive(image, stepSize, windowSize):
+	# slide a window across the image
+	#for y in range(image.shape[0],0, -stepSize):
+	y=0
+	for x in range(image.shape[1],0, -stepSize):
+		# yield the current window
+		yield (x, y, image[y:y + windowSize[1], x:x - windowSize[0]])
+
 def extract_digit(cell,name, debug=False): #todo - имя сделать необязательным и 3-м параметром
 	# apply automatic thresholding to the cell and then clear any
 	# connected borders that touch the border of the cell
